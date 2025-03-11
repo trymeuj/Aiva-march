@@ -1,0 +1,34 @@
+[
+  {
+    "id": "route_ts",
+    "label": "File",
+    "name": "route.ts",
+    "path": "C:\\Users\\ujjwa\\Desktop\\learning\\dev\\IITD_Forum\\IITD-Forum\\src\\app\\api\\addprof\\route.ts",
+    "type": "utility"
+  },
+  {
+    "id": "post",
+    "label": "Function",
+    "name": "POST"
+  },
+  {
+    "id": "post_return_response",
+    "label": "DataStructure",
+    "name": "response"
+  },
+  {
+    "id": "post_return_nextresponse",
+    "label": "DataStructure",
+    "name": "NextResponse"
+  },
+  {
+    "id": "addprofessorrequest",
+    "label": "DataStructure",
+    "name": "AddProfessorRequest"
+  },
+  {
+    "id": "error_handling",
+    "label": "Service",
+    "name": "Error Handling"
+  }
+]

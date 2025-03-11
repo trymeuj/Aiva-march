@@ -1,0 +1,626 @@
+{
+  "nodes": [
+    {
+      "id": "agent_py",
+      "label": "File",
+      "name": "agent.py",
+      "path": "C:\\Users\\ujjwa\\Desktop\\learning\\Agents\\flightagent\\backend\\agent.py",
+      "type": "utility"
+    },
+    {
+      "id": "parse_user_query",
+      "label": "Function",
+      "name": "parse_user_query"
+    },
+    {
+      "id": "parse_user_query_the",
+      "label": "Parameter",
+      "name": "the"
+    },
+    {
+      "id": "parse_user_query_return_intent",
+      "label": "DataStructure",
+      "name": "intent"
+    },
+    {
+      "id": "parse_user_query_return_extracted",
+      "label": "DataStructure",
+      "name": "extracted"
+    },
+    {
+      "id": "input_data",
+      "label": "DataStructure",
+      "name": "input_data"
+    },
+    {
+      "id": "graph",
+      "label": "DataStructure",
+      "name": "graph"
+    },
+    {
+      "id": "google_generativeai",
+      "label": "Library",
+      "name": "google.generativeai"
+    },
+    {
+      "id": "langgraph",
+      "label": "Library",
+      "name": "langgraph"
+    },
+    {
+      "id": "json",
+      "label": "Library",
+      "name": "json"
+    },
+    {
+      "id": "os",
+      "label": "Library",
+      "name": "os"
+    },
+    {
+      "id": "api_calls",
+      "label": "Library",
+      "name": "api_calls"
+    },
+    {
+      "id": "input",
+      "label": "DataFlow",
+      "name": "Input"
+    },
+    {
+      "id": "route_ts",
+      "label": "File",
+      "name": "route.ts",
+      "path": "C:\\Users\\ujjwa\\Desktop\\learning\\dev\\IITD_Forum\\IITD-Forum\\src\\app\\api\\addprof\\route.ts",
+      "type": "utility"
+    },
+    {
+      "id": "post",
+      "label": "Function",
+      "name": "POST"
+    },
+    {
+      "id": "post_return_response",
+      "label": "DataStructure",
+      "name": "response"
+    },
+    {
+      "id": "post_return_nextresponse",
+      "label": "DataStructure",
+      "name": "NextResponse"
+    },
+    {
+      "id": "addprofessorrequest",
+      "label": "DataStructure",
+      "name": "AddProfessorRequest"
+    },
+    {
+      "id": "error_handling",
+      "label": "Service",
+      "name": "Error Handling"
+    },
+    {
+      "id": "get",
+      "label": "Function",
+      "name": "GET"
+    },
+    {
+      "id": "get_return_formatted",
+      "label": "DataStructure",
+      "name": "formatted"
+    },
+    {
+      "id": "get_return_500",
+      "label": "DataStructure",
+      "name": "500"
+    },
+    {
+      "id": "get_return_professor",
+      "label": "DataStructure",
+      "name": "professor"
+    },
+    {
+      "id": "uniquecourses",
+      "label": "DataStructure",
+      "name": "uniqueCourses"
+    },
+    {
+      "id": "ratings",
+      "label": "DataStructure",
+      "name": "ratings"
+    },
+    {
+      "id": "profratings",
+      "label": "DataStructure",
+      "name": "profRatings"
+    },
+    {
+      "id": "api_endpoint",
+      "label": "API",
+      "name": "API Endpoint"
+    },
+    {
+      "id": "get_return_retrieved",
+      "label": "DataStructure",
+      "name": "retrieved"
+    },
+    {
+      "id": "get_return_401",
+      "label": "DataStructure",
+      "name": "401"
+    },
+    {
+      "id": "get_return_400",
+      "label": "DataStructure",
+      "name": "400"
+    },
+    {
+      "id": "get_return_201",
+      "label": "DataStructure",
+      "name": "201"
+    },
+    {
+      "id": "get_return_502",
+      "label": "DataStructure",
+      "name": "502"
+    },
+    {
+      "id": "get_return_buffer",
+      "label": "DataStructure",
+      "name": "Buffer"
+    },
+    {
+      "id": "mongodb_database",
+      "label": "Service",
+      "name": "MongoDB Database"
+    },
+    {
+      "id": "get_return_reversed",
+      "label": "DataStructure",
+      "name": "reversed"
+    },
+    {
+      "id": "database",
+      "label": "Service",
+      "name": "Database"
+    },
+    {
+      "id": "post_return_http",
+      "label": "DataStructure",
+      "name": "HTTP"
+    },
+    {
+      "id": "body",
+      "label": "DataStructure",
+      "name": "body"
+    },
+    {
+      "id": "post_return_400",
+      "label": "DataStructure",
+      "name": "400"
+    },
+    {
+      "id": "user",
+      "label": "DataStructure",
+      "name": "User"
+    },
+    {
+      "id": "bcrypt",
+      "label": "Library",
+      "name": "bcrypt"
+    },
+    {
+      "id": "generatetokenandsetcookie",
+      "label": "Library",
+      "name": "generateTokenAndSetCookie"
+    },
+    {
+      "id": "delete",
+      "label": "Function",
+      "name": "DELETE"
+    },
+    {
+      "id": "delete_return_redirect",
+      "label": "DataStructure",
+      "name": "redirect"
+    },
+    {
+      "id": "delete_return_json",
+      "label": "DataStructure",
+      "name": "JSON"
+    },
+    {
+      "id": "request",
+      "label": "DataStructure",
+      "name": "Request"
+    },
+    {
+      "id": "nextresponse",
+      "label": "DataStructure",
+      "name": "NextResponse"
+    },
+    {
+      "id": "cookiestore",
+      "label": "DataStructure",
+      "name": "cookieStore"
+    },
+    {
+      "id": "process_env_node_env",
+      "label": "Library",
+      "name": "process.env.NODE_ENV"
+    },
+    {
+      "id": "authentication_system",
+      "label": "Service",
+      "name": "Authentication System"
+    }
+  ],
+  "relationships": [
+    {
+      "source": "agent_py",
+      "target": "parse_user_query",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "parse_user_query",
+      "target": "parse_user_query_the",
+      "type": "ACCEPTS"
+    },
+    {
+      "source": "parse_user_query",
+      "target": "parse_user_query_return_intent",
+      "type": "RETURNS"
+    },
+    {
+      "source": "parse_user_query",
+      "target": "parse_user_query_return_extracted",
+      "type": "RETURNS"
+    },
+    {
+      "source": "agent_py",
+      "target": "input_data",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "agent_py",
+      "target": "graph",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "agent_py",
+      "target": "google_generativeai",
+      "type": "IMPORTS"
+    },
+    {
+      "source": "agent_py",
+      "target": "langgraph",
+      "type": "IMPORTS"
+    },
+    {
+      "source": "agent_py",
+      "target": "json",
+      "type": "IMPORTS"
+    },
+    {
+      "source": "agent_py",
+      "target": "os",
+      "type": "IMPORTS"
+    },
+    {
+      "source": "agent_py",
+      "target": "api_calls",
+      "type": "IMPORTS"
+    },
+    {
+      "source": "agent_py",
+      "target": "input",
+      "type": "CALLS"
+    },
+    {
+      "source": "parse_user_query",
+      "target": "input",
+      "type": "CALLS"
+    },
+    {
+      "source": "route_ts",
+      "target": "post",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "post",
+      "target": "post_return_response",
+      "type": "RETURNS"
+    },
+    {
+      "source": "post",
+      "target": "post_return_nextresponse",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "addprofessorrequest",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "route_ts",
+      "target": "error_handling",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "post",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "route_ts",
+      "target": "get",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_formatted",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_500",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_professor",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "uniquecourses",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "route_ts",
+      "target": "ratings",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "route_ts",
+      "target": "profratings",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "route_ts",
+      "target": "api_endpoint",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "api_endpoint",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "get",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_retrieved",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_401",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_400",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_201",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_502",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_buffer",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "mongodb_database",
+      "type": "INTERACTS_WITH"
+    },
+    {
+      "source": "route_ts",
+      "target": "get",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_reversed",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_401",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_401",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_400",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_201",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "get_return_502",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "post",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "route_ts",
+      "target": "database",
+      "type": "RETURNS"
+    },
+    {
+      "source": "get",
+      "target": "database",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "post",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "post",
+      "target": "post_return_http",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "body",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "route_ts",
+      "target": "error_handling",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "post",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "post",
+      "target": "post_return_400",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "user",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "route_ts",
+      "target": "bcrypt",
+      "type": "IMPORTS"
+    },
+    {
+      "source": "route_ts",
+      "target": "generatetokenandsetcookie",
+      "type": "IMPORTS"
+    },
+    {
+      "source": "route_ts",
+      "target": "error_handling",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "delete",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "delete",
+      "target": "delete_return_redirect",
+      "type": "RETURNS"
+    },
+    {
+      "source": "delete",
+      "target": "delete_return_json",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "request",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "route_ts",
+      "target": "nextresponse",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "route_ts",
+      "target": "cookiestore",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "route_ts",
+      "target": "process_env_node_env",
+      "type": "IMPORTS"
+    },
+    {
+      "source": "route_ts",
+      "target": "authentication_system",
+      "type": "USES"
+    }
+  ],
+  "properties": {
+    "addprofessorrequest": [
+      "properties",
+      "like"
+    ],
+    "uniquecourses": [
+      "properties",
+      "like"
+    ],
+    "ratings": [
+      "properties",
+      "like"
+    ],
+    "profratings": [
+      "average",
+      "ratings",
+      "related",
+      "information",
+      "specific",
+      "course",
+      "grouped",
+      "professor"
+    ],
+    "post": [
+      "user",
+      "information",
+      "extracted",
+      "token",
+      "such"
+    ],
+    "user": [
+      "function",
+      "responsible",
+      "generating",
+      "token"
+    ],
+    "request": [
+      "information",
+      "about",
+      "request",
+      "such",
+      "URL",
+      "headers",
+      "body"
+    ]
+  }
+}

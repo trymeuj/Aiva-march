@@ -1,0 +1,18 @@
+Knowledge Graph Summary
+======================
+
+Total nodes: 6
+
+Node types:
+  - File: 1
+  - Function: 1
+  - DataStructure: 3
+  - Service: 1
+
+Total relationships: 5
+
+Relationship types:
+  - CONTAINS: 2
+  - RETURNS: 3
+
+Nodes with properties: 1

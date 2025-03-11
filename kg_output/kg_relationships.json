@@ -1,0 +1,27 @@
+[
+  {
+    "source": "route_ts",
+    "target": "post",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "post",
+    "target": "post_return_response",
+    "type": "RETURNS"
+  },
+  {
+    "source": "post",
+    "target": "post_return_nextresponse",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "addprofessorrequest",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "route_ts",
+    "target": "error_handling",
+    "type": "RETURNS"
+  }
+]

@@ -1,0 +1,46 @@
+{
+  "addprofessorrequest": [
+    "properties",
+    "like"
+  ],
+  "uniquecourses": [
+    "properties",
+    "like"
+  ],
+  "ratings": [
+    "properties",
+    "like"
+  ],
+  "profratings": [
+    "average",
+    "ratings",
+    "related",
+    "information",
+    "specific",
+    "course",
+    "grouped",
+    "professor"
+  ],
+  "post": [
+    "user",
+    "information",
+    "extracted",
+    "token",
+    "such"
+  ],
+  "user": [
+    "function",
+    "responsible",
+    "generating",
+    "token"
+  ],
+  "request": [
+    "information",
+    "about",
+    "request",
+    "such",
+    "URL",
+    "headers",
+    "body"
+  ]
+}

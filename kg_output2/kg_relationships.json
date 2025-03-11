@@ -1,0 +1,322 @@
+[
+  {
+    "source": "agent_py",
+    "target": "parse_user_query",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "parse_user_query",
+    "target": "parse_user_query_the",
+    "type": "ACCEPTS"
+  },
+  {
+    "source": "parse_user_query",
+    "target": "parse_user_query_return_intent",
+    "type": "RETURNS"
+  },
+  {
+    "source": "parse_user_query",
+    "target": "parse_user_query_return_extracted",
+    "type": "RETURNS"
+  },
+  {
+    "source": "agent_py",
+    "target": "input_data",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "agent_py",
+    "target": "graph",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "agent_py",
+    "target": "google_generativeai",
+    "type": "IMPORTS"
+  },
+  {
+    "source": "agent_py",
+    "target": "langgraph",
+    "type": "IMPORTS"
+  },
+  {
+    "source": "agent_py",
+    "target": "json",
+    "type": "IMPORTS"
+  },
+  {
+    "source": "agent_py",
+    "target": "os",
+    "type": "IMPORTS"
+  },
+  {
+    "source": "agent_py",
+    "target": "api_calls",
+    "type": "IMPORTS"
+  },
+  {
+    "source": "agent_py",
+    "target": "input",
+    "type": "CALLS"
+  },
+  {
+    "source": "parse_user_query",
+    "target": "input",
+    "type": "CALLS"
+  },
+  {
+    "source": "route_ts",
+    "target": "post",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "post",
+    "target": "post_return_response",
+    "type": "RETURNS"
+  },
+  {
+    "source": "post",
+    "target": "post_return_nextresponse",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "addprofessorrequest",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "route_ts",
+    "target": "error_handling",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "post",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "route_ts",
+    "target": "get",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_formatted",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_500",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_professor",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "uniquecourses",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "route_ts",
+    "target": "ratings",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "route_ts",
+    "target": "profratings",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "route_ts",
+    "target": "api_endpoint",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "api_endpoint",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "get",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_retrieved",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_401",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_400",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_201",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_502",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_buffer",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "mongodb_database",
+    "type": "INTERACTS_WITH"
+  },
+  {
+    "source": "route_ts",
+    "target": "get",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_reversed",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_401",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_401",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_400",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_201",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "get_return_502",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "post",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "route_ts",
+    "target": "database",
+    "type": "RETURNS"
+  },
+  {
+    "source": "get",
+    "target": "database",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "post",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "post",
+    "target": "post_return_http",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "body",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "route_ts",
+    "target": "error_handling",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "post",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "post",
+    "target": "post_return_400",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "user",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "route_ts",
+    "target": "bcrypt",
+    "type": "IMPORTS"
+  },
+  {
+    "source": "route_ts",
+    "target": "generatetokenandsetcookie",
+    "type": "IMPORTS"
+  },
+  {
+    "source": "route_ts",
+    "target": "error_handling",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "delete",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "delete",
+    "target": "delete_return_redirect",
+    "type": "RETURNS"
+  },
+  {
+    "source": "delete",
+    "target": "delete_return_json",
+    "type": "RETURNS"
+  },
+  {
+    "source": "route_ts",
+    "target": "request",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "route_ts",
+    "target": "nextresponse",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "route_ts",
+    "target": "cookiestore",
+    "type": "CONTAINS"
+  },
+  {
+    "source": "route_ts",
+    "target": "process_env_node_env",
+    "type": "IMPORTS"
+  },
+  {
+    "source": "route_ts",
+    "target": "authentication_system",
+    "type": "USES"
+  }
+]

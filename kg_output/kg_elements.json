@@ -1,0 +1,69 @@
+{
+  "nodes": [
+    {
+      "id": "route_ts",
+      "label": "File",
+      "name": "route.ts",
+      "path": "C:\\Users\\ujjwa\\Desktop\\learning\\dev\\IITD_Forum\\IITD-Forum\\src\\app\\api\\addprof\\route.ts",
+      "type": "utility"
+    },
+    {
+      "id": "post",
+      "label": "Function",
+      "name": "POST"
+    },
+    {
+      "id": "post_return_response",
+      "label": "DataStructure",
+      "name": "response"
+    },
+    {
+      "id": "post_return_nextresponse",
+      "label": "DataStructure",
+      "name": "NextResponse"
+    },
+    {
+      "id": "addprofessorrequest",
+      "label": "DataStructure",
+      "name": "AddProfessorRequest"
+    },
+    {
+      "id": "error_handling",
+      "label": "Service",
+      "name": "Error Handling"
+    }
+  ],
+  "relationships": [
+    {
+      "source": "route_ts",
+      "target": "post",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "post",
+      "target": "post_return_response",
+      "type": "RETURNS"
+    },
+    {
+      "source": "post",
+      "target": "post_return_nextresponse",
+      "type": "RETURNS"
+    },
+    {
+      "source": "route_ts",
+      "target": "addprofessorrequest",
+      "type": "CONTAINS"
+    },
+    {
+      "source": "route_ts",
+      "target": "error_handling",
+      "type": "RETURNS"
+    }
+  ],
+  "properties": {
+    "addprofessorrequest": [
+      "properties",
+      "like"
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+Knowledge Graph Summary
+======================
+
+Total nodes: 50
+
+Node types:
+  - File: 2
+  - Function: 4
+  - Parameter: 1
+  - DataStructure: 29
+  - Library: 8
+  - DataFlow: 1
+  - Service: 4
+  - API: 1
+
+Total relationships: 64
+
+Relationship types:
+  - CONTAINS: 21
+  - ACCEPTS: 1
+  - RETURNS: 30
+  - IMPORTS: 8
+  - CALLS: 2
+  - INTERACTS_WITH: 1
+  - USES: 1
+
+Nodes with properties: 7
