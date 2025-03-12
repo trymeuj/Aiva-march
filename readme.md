@@ -5,7 +5,7 @@ pip install spacy neo4j argparse fs-extra
 how to run analyzer.js
 
 run in powershell :
-$env:GEMINI_API_KEY = "AIzaSyBjoamJXg5b4pH6cW_Liqou49kkfICwhDM"
+$env:GEMINI_API_KEY = "api_key"
 node analyzer.js "path/to/your/codebase" "path/to/output/directory"
 
 -----------------------------
