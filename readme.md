@@ -11,7 +11,10 @@ node analyzer.js "path/to/your/codebase" "path/to/output/directory"
 -----------------------------
 
 analyzer.js : gives code summary in the specified dir
-handling 1 object in code_summary (summary of 1 file)
+
+-----------------------------
+
+handling 1 object in code_summary.json (summary of 1 file)
 newconstruct.py : gives KG elements from code_summary.json and writes into kg_output folder
 kg_output/kg_elements.js contains the elements as dict
 

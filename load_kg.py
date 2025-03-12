@@ -2,7 +2,7 @@ import json
 from neo4j_connection import neo4j_conn
 
 # Load KG data from the JSON file
-with open("kg_output2/kg_elements.json", "r") as file:
+with open("enhanced_kg_output/kg_elements.json", "r") as file:
     kg_data = json.load(file)
 
 def insert_nodes():

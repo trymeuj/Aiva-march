@@ -1,16 +1,15 @@
 Knowledge Graph Summary
 ======================
 
-Total nodes: 19
+Total nodes: 105
 
 Node types:
-  - File: 15
-  - DataStructure: 1
-  - Function: 3
+  - Endpoint: 50
+  - File: 55
 
-Total relationships: 4
+Total relationships: 74
 
 Relationship types:
-  - CONTAINS: 4
+  - DEFINES: 74
 
 Nodes with properties: 0

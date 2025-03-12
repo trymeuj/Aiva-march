@@ -639,7 +639,7 @@ def save_kg_elements_to_files(kg_elements, output_dir="kg_output"):
 
 if __name__ == "__main__":
     # Read the summaries from a file
-    with open("code_summary.json", "r") as f:
+    with open("complete.json", "r") as f:
         summaries_json = f.read()
     
     # Process the summaries

@@ -1,0 +1,446 @@
+[
+  {
+    "source": "page_tsx",
+    "target": "endpoint_details",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_text",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_requests",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_request",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_6",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_based",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_text",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_or",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_with",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_creation",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_and",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_created",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_method",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_in",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_data",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_by",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_flagged",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_not",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_id",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_the",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "route_ts",
+    "target": "endpoint_is",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_search",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_for",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_and",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_to",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_objects",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_title",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_content",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "butnotsel_tsx",
+    "target": "endpoint_field",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "card_tsx",
+    "target": "endpoint_button",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "card2_tsx",
+    "target": "endpoint_with",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "card2_tsx",
+    "target": "endpoint_id",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "card2_tsx",
+    "target": "endpoint_is",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "card3_tsx",
+    "target": "endpoint_was",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "card3_tsx",
+    "target": "endpoint_author",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "ratingstatic_tsx",
+    "target": "endpoint_value",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "searchbar_tsx",
+    "target": "endpoint_field",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "searchbar_tsx",
+    "target": "endpoint_element",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "searchbar_tsx",
+    "target": "endpoint_placeholder",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "searchbararr_tsx",
+    "target": "endpoint_field",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "searchbararr_tsx",
+    "target": "endpoint_element",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "searchbararr2_tsx",
+    "target": "endpoint_field",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "searchbararr2_tsx",
+    "target": "endpoint_change",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "searchbararr2_tsx",
+    "target": "endpoint_element",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "searchbararr2_tsx",
+    "target": "endpoint_and",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "searchbararr2_tsx",
+    "target": "endpoint_input-bordered",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "searchbararr2_tsx",
+    "target": "endpoint_placeholder",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "textboxai_tsx",
+    "target": "endpoint_component",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "textboxai_tsx",
+    "target": "endpoint_and",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "textboxai_tsx",
+    "target": "endpoint_change",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_type",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_validation",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_change",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_field",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_data",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_in",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_page",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_fields",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "logout_ts",
+    "target": "endpoint_request",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "generalpost_ts",
+    "target": "endpoint_with",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "generalpost_ts",
+    "target": "endpoint_general",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "post_ts",
+    "target": "endpoint_information",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "post_ts",
+    "target": "endpoint_post",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "prof_ts",
+    "target": "endpoint_department",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "ratecard_ts",
+    "target": "endpoint_rate",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "user_ts",
+    "target": "endpoint_user",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_information",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "page_tsx",
+    "target": "endpoint_changes",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "createpost_ts",
+    "target": "endpoint_in",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "createpost_ts",
+    "target": "endpoint_content",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "createpost_ts",
+    "target": "endpoint_document",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "filter_ts",
+    "target": "endpoint_parameters",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "filter_ts",
+    "target": "endpoint_and",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  },
+  {
+    "source": "search_ts",
+    "target": "endpoint_average",
+    "type": "DEFINES",
+    "description": "Establishes or declares the target"
+  }
+]
