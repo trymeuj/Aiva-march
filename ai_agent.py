@@ -36,10 +36,10 @@ class AIAgent:
         self.collected_parameters = {}
         self.missing_parameters = []
         self.execution_plan = None
-        
+    
     async def process_user_input(self, user_input: str) -> str:
         """
-        Process user input and manage the conversation flow.
+        Process user input and manage the conversation flow with modified API-first approach.
         
         Args:
             user_input: The user's input text
@@ -63,7 +63,7 @@ class AIAgent:
             
     async def _handle_initial_input(self, user_input: str) -> str:
         """
-        Handle initial user input by analyzing intent and extracting parameters.
+        Modified to first identify intent, then API, then determine required parameters.
         
         Args:
             user_input: The user's input text
@@ -71,26 +71,34 @@ class AIAgent:
         Returns:
             Response text to send back to the user
         """
-        # Analyze user intent
+        # First: Analyze user intent
         intent_analysis = await self.intent_analyzer.analyze_intent(
             user_input, 
             self.conversation_manager.conversation_history
         )
         
         self.current_intent = intent_analysis["intent"]
+        
+        # Second: Match intent to API(s)
         self.matched_apis = intent_analysis["matched_apis"]
         
         # No matching APIs found
         if not self.matched_apis:
             self.current_state = 'idle'
             response = (
-                f"I'm sorry, but I'm not sure how to help with: \"{user_input}\". "
+                f"I'm not sure how to help with: \"{user_input}\". "
                 f"Could you try rephrasing or provide more details about what you'd like to do?"
             )
             self.conversation_manager.add_message('assistant', response)
             return response
         
-        # Extract parameters from initial input
+        # If multiple APIs matched, we might want to disambiguate
+        if len(self.matched_apis) > 1:
+            # Optionally: Add disambiguation step here if needed
+            # For now, just use the first matched API (highest confidence)
+            pass
+        
+        # Third: Extract parameters from initial input
         parameter_result = await self.parameter_manager.extract_parameters(
             user_input,
             self.matched_apis,
@@ -100,17 +108,24 @@ class AIAgent:
         self.collected_parameters = parameter_result["valid_params"]
         self.missing_parameters = parameter_result["missing_params"]
         
-        # Check if we need more parameters
+        # Fourth: Check if we need more parameters
         if self.missing_parameters:
             self.current_state = 'gathering_parameters'
+            
+            # Generate a message about what we're doing, including which API we're using
+            api_info = self.matched_apis[0].get("description", "this action")
+            question_preface = f"I'll help you with {api_info}. "
+            
+            # Generate questions for missing parameters
             question = await self.conversation_manager.generate_clarification_questions(
                 self.missing_parameters
             )
-            return question
+            
+            return question_preface + question
         else:
             # All parameters collected, ready to execute
             return await self._prepare_execution()
-            
+
     async def _handle_parameter_input(self, user_input: str) -> str:
         """
         Handle user response when gathering parameters.

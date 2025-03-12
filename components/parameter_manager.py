@@ -14,11 +14,40 @@ class ParameterManager:
         """
         self.api_knowledge_base = api_knowledge_base
         self.model = model
+    
+    def _get_required_parameters(self, matched_apis: List[Dict]) -> List[Dict]:
+        """
+        Compile list of parameters from the primary matched API.
+        Focus on the first matched API (highest confidence match).
+        
+        Args:
+            matched_apis: List of APIs that match the user's intent
+        
+        Returns:
+            List of parameter definitions needed by the API
+        """
+        api_parameters = []
+        
+        # Focus on the primary matched API (first in the list)
+        if matched_apis and len(matched_apis) > 0:
+            primary_api = matched_apis[0]
+            api_id = primary_api.get("id")
+            
+            if api_id:
+                # Get detailed API information including parameters
+                api_info = self.api_knowledge_base.get_detailed_api_info(api_id)
+                if api_info and "parameters" in api_info:
+                    api_parameters = api_info.get("parameters", [])
+                    print(f"Found {len(api_parameters)} parameters for API {api_id}")
+                    for param in api_parameters:
+                        print(f"  - {param.get('name')}: {param.get('description', 'No description')} (Required: {param.get('required', False)})")
+        
+        return api_parameters
         
     async def extract_parameters(self, user_prompt: str, matched_apis: List[Dict], 
                                 conversation_history: List[Dict] = None):
         """
-        Extract parameters from user input.
+        Extract parameters from user input based on the matched API requirements.
         
         Args:
             user_prompt: User's input text
@@ -30,11 +59,14 @@ class ParameterManager:
         """
         if conversation_history is None:
             conversation_history = []
-            
-        # Get required parameters for the matched APIs
-        required_parameters = self._get_required_parameters(matched_apis)
         
-        if not required_parameters:
+        # Get all parameters for the primary matched API
+        all_parameters = self._get_required_parameters(matched_apis)
+        
+        # Get only the required parameters (for validation later)
+        required_parameters = [p for p in all_parameters if p.get("required", False)]
+        
+        if not all_parameters:
             return {
                 "valid_params": {},
                 "missing_params": []
@@ -48,14 +80,21 @@ class ParameterManager:
                 "content": msg.get("content", "")
             })
         
+        # Get API information for context
+        api_context = "unknown action"
+        if matched_apis and len(matched_apis) > 0:
+            api_context = matched_apis[0].get("description", "unknown action")
+        
         # Prepare the extraction prompt
         param_descriptions = []
-        for param in required_parameters:
-            param_descriptions.append(f"- {param['name']}: {param['description']} (Type: {param['type']})")
+        for param in all_parameters:
+            param_type = param.get("type", "string")
+            required_text = "(Required)" if param.get("required", False) else "(Optional)"
+            param_descriptions.append(f"- {param['name']}: {param.get('description', '')} {required_text} (Type: {param_type})")
         
         extraction_prompt = f"""You are an AI assistant that extracts parameter values from user messages.
 
-The user's request relates to: {[api.get('description', '') for api in matched_apis]}
+The user's request relates to: {api_context}
 
 Extract values for these parameters from the user's message:
 {chr(10).join(param_descriptions)}
@@ -68,7 +107,7 @@ Previous conversation:
 Respond with a JSON object where keys are parameter names and values are the extracted values.
 Only include parameters you can confidently extract. If a parameter isn't mentioned, don't include it.
 """
-                 
+                
         response = await self.model.generate_content_async(
             extraction_prompt,
             generation_config={
@@ -88,59 +127,76 @@ Only include parameters you can confidently extract. If a parameter isn't mentio
             else:
                 extracted_params = json.loads(response_text)
         except json.JSONDecodeError:
-            # Fallback for non-JSON responses
-            extracted_params = self._extract_params_from_text(response.text, required_parameters)
+            # Fallback extraction for non-JSON responses
+            extracted_params = {}
+            text = response.text
+            
+            for param in all_parameters:
+                param_name = param.get("name", "")
+                # Look for mentions of the parameter in the response
+                pattern = rf"{param_name}\s*[:=]\s*[\"']?([^\"',\n]+)[\"']?"
+                matches = re.search(pattern, text, re.IGNORECASE)
+                if matches:
+                    extracted_params[param_name] = matches.group(1).strip()
+                # Also look for the value directly in user response
+                elif re.search(r'\b' + re.escape(param_name) + r'\b', user_prompt, re.IGNORECASE):
+                    # If parameter name is mentioned, look for nearby values
+                    words = user_prompt.split()
+                    try:
+                        idx = next(i for i, word in enumerate(words) 
+                                if re.search(r'\b' + re.escape(param_name) + r'\b', word, re.IGNORECASE))
+                        if idx + 1 < len(words):
+                            extracted_params[param_name] = words[idx + 1].strip('.,":;')
+                    except StopIteration:
+                        pass
         
-        # Validate extracted parameters
-        return self._validate_parameters(extracted_params, required_parameters)
+        # Validate extracted parameters and identify missing required ones
+        return self._validate_parameters(extracted_params, required_parameters, all_parameters)
     
-    def _get_required_parameters(self, matched_apis: List[Dict]) -> List[Dict]:
-        """Compile list of required parameters from all matched APIs"""
-        required_params = []
-        for api in matched_apis:
-            api_id = api.get("id")
-            if not api_id:
-                continue
-                
-            for param in self.api_knowledge_base.get_api_parameters(api_id):
-                if param.get("required", False) and not any(p.get("name") == param.get("name") for p in required_params):
-                    required_params.append(param)
-        return required_params
-    
-    def _validate_parameters(self, extracted_params: Dict, required_parameters: List[Dict]):
-        """Validate extracted parameters against requirements"""
+    def _validate_parameters(self, extracted_params: Dict, required_parameters: List[Dict], all_parameters: List[Dict]):
+        """
+        Validate extracted parameters against requirements and track missing required parameters.
+        
+        Args:
+            extracted_params: Dictionary of extracted parameter values
+            required_parameters: List of required parameter definitions
+            all_parameters: List of all parameter definitions for this API
+            
+        Returns:
+            Dictionary with valid parameters and missing parameters
+        """
         validated_params = {}
         missing_params = []
         
-        for req_param in required_parameters:
-            param_name = req_param.get("name")
-            if param_name in extracted_params:
-                # Validate the extracted value against parameter constraints
-                validation_result = self._validate_param_value(
-                    extracted_params[param_name], 
-                    req_param
-                )
+        # First, validate all provided parameters (required or not)
+        for param_name, value in extracted_params.items():
+            # Find the parameter definition
+            param_def = next((p for p in all_parameters if p.get("name") == param_name), None)
+            
+            if param_def:
+                # Validate the extracted value
+                validation_result = self._validate_param_value(value, param_def)
                 
                 if validation_result.get("valid", False):
-                    validated_params[param_name] = extracted_params[param_name]
-                else:
-                    missing_params.append({
-                        "name": param_name,
-                        "reason": validation_result.get("reason", "Invalid value"),
-                        "type": req_param.get("type", "unknown")
-                    })
-            else:
+                    validated_params[param_name] = value
+        
+        # Then, check which required parameters are missing
+        for req_param in required_parameters:
+            param_name = req_param.get("name")
+            if param_name not in validated_params:
                 missing_params.append({
                     "name": param_name,
                     "reason": "Not provided",
-                    "type": req_param.get("type", "unknown")
+                    "description": req_param.get("description", ""),
+                    "type": req_param.get("type", "unknown"),
+                    "required": True
                 })
         
         return {
             "valid_params": validated_params,
             "missing_params": missing_params
         }
-    
+
     def _validate_param_value(self, value, param_definition):
         """Validate parameter value against its type and constraints"""
         param_type = param_definition.get("type", "string")
@@ -215,18 +271,3 @@ Only include parameters you can confidently extract. If a parameter isn't mentio
             return False
         
         return True  # Default to valid if rule type unknown
-        
-    def _extract_params_from_text(self, text: str, required_parameters: List[Dict]) -> Dict:
-        """Extract parameters from non-JSON response text"""
-        extracted = {}
-        
-        for param in required_parameters:
-            param_name = param.get("name")
-            
-            # Look for parameter mentions in the text
-            pattern = rf"{param_name}\s*[:=]\s*[\"']?([^\"',\n]+)[\"']?"
-            matches = re.search(pattern, text, re.IGNORECASE)
-            if matches:
-                extracted[param_name] = matches.group(1).strip()
-        
-        return extracted

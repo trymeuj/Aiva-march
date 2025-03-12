@@ -65,7 +65,7 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
     # Create or get an agent instance for this session
     if session_id not in agent_instances:
         # Initialize Gemini model
-        model = genai.GenerativeModel('gemini-1.5-pro')
+        model = genai.GenerativeModel('gemini-2.0-flash')
         
         # Create a new agent instance
         agent_instances[session_id] = AIAgent(
