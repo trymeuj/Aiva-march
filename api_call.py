@@ -12,7 +12,7 @@ class APIClient:
             base_url: Base URL for API requests (optional)
         """
         # self.base_url = base_url or "http://localhost:3000"  # Default to local server
-        self.base_url = "http://localhost:3000"
+        self.base_url = "https://iitdelhiforum.in/"
         self.session = None
         self.auth_token = None
         
