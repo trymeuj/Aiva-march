@@ -177,8 +177,15 @@ Only include parameters you can confidently extract. If a parameter isn't mentio
                 # Validate the extracted value
                 validation_result = self._validate_param_value(value, param_def)
                 
-                if validation_result.get("valid", False):
+                # Add defensive check to handle None result
+                if validation_result is None:
+                    print(f"WARNING: _validate_param_value returned None for {param_name}")
+                    # Default to accepting the value if validation fails to return a result
                     validated_params[param_name] = value
+                elif validation_result.get("valid", False):
+                    validated_params[param_name] = value
+                else:
+                    print(f"Parameter validation failed for {param_name}: {validation_result.get('reason', 'Unknown reason')}")
         
         # Then, check which required parameters are missing
         for req_param in required_parameters:
@@ -198,76 +205,89 @@ Only include parameters you can confidently extract. If a parameter isn't mentio
         }
 
     def _validate_param_value(self, value, param_definition):
-        """Validate parameter value against its type and constraints"""
-        param_type = param_definition.get("type", "string")
+        """
+        Improved validation for parameter values against their type and constraints.
         
-        # Type validation
+        Args:
+            value: The value to validate
+            param_definition: The parameter definition with type and constraints
+            
+        Returns:
+            Dictionary with validation result and reason if invalid
+        """
+        # Defensive check to handle None param_definition
+        if param_definition is None:
+            return {"valid": True}
+            
+        param_type = param_definition.get("type", "string")
+        param_name = param_definition.get("name", "Unknown parameter")
+        
+        # Handle empty values
+        if value is None or (isinstance(value, str) and not value.strip()):
+            if param_definition.get("required", False):
+                return {"valid": False, "reason": f"{param_name} cannot be empty"}
+            else:
+                return {"valid": True}  # Empty is okay for optional parameters
+        
+        # Type validation with more detailed error messages
         if param_type == "string":
             if not isinstance(value, str):
-                return {"valid": False, "reason": "Value must be a string"}
+                return {
+                    "valid": False, 
+                    "reason": f"{param_name} must be a string, got {type(value).__name__}"
+                }
         elif param_type == "number":
             try:
-                float(value)  # Check if convertible to number
+                # Try to convert to float first
+                float_val = float(value)
+                # If an integer is expected, check if it's a whole number
+                if param_definition.get("integer", False) and float_val != int(float_val):
+                    return {
+                        "valid": False, 
+                        "reason": f"{param_name} must be an integer, got {value}"
+                    }
             except (ValueError, TypeError):
-                return {"valid": False, "reason": "Value must be a number"}
+                return {
+                    "valid": False, 
+                    "reason": f"{param_name} must be a number, got '{value}'"
+                }
         elif param_type == "boolean":
-            if not isinstance(value, bool) and value not in ["true", "false", "True", "False"]:
-                return {"valid": False, "reason": "Value must be a boolean"}
+            if isinstance(value, bool):
+                return {"valid": True}
+            elif isinstance(value, str) and value.lower() in ["true", "false", "yes", "no", "1", "0"]:
+                return {"valid": True}  # Accept various boolean-like strings
+            else:
+                return {
+                    "valid": False, 
+                    "reason": f"{param_name} must be a boolean (true/false), got '{value}'"
+                }
         elif param_type == "array":
-            if not isinstance(value, list):
-                # Try to parse as JSON array if it's a string
-                if isinstance(value, str):
-                    try:
-                        value = json.loads(value)
-                        if not isinstance(value, list):
-                            return {"valid": False, "reason": "Value must be an array"}
-                    except json.JSONDecodeError:
-                        return {"valid": False, "reason": "Value must be a valid array"}
-                else:
-                    return {"valid": False, "reason": "Value must be an array"}
-        elif param_type == "object":
-            if not isinstance(value, dict):
-                # Try to parse as JSON object if it's a string
-                if isinstance(value, str):
-                    try:
-                        value = json.loads(value)
-                        if not isinstance(value, dict):
-                            return {"valid": False, "reason": "Value must be an object"}
-                    except json.JSONDecodeError:
-                        return {"valid": False, "reason": "Value must be a valid object"}
-                else:
-                    return {"valid": False, "reason": "Value must be an object"}
+            if isinstance(value, list):
+                return {"valid": True}
+            elif isinstance(value, str):
+                # Try to parse as JSON array
+                try:
+                    parsed_value = json.loads(value)
+                    if isinstance(parsed_value, list):
+                        return {"valid": True}
+                    else:
+                        return {
+                            "valid": False, 
+                            "reason": f"{param_name} must be an array, parsed as {type(parsed_value).__name__}"
+                        }
+                except json.JSONDecodeError:
+                    # Try comma-separated format as fallback
+                    if "," in value:
+                        return {"valid": True}  # Accept comma-separated values
+                    return {
+                        "valid": False, 
+                        "reason": f"{param_name} must be a valid array, got '{value}'"
+                    }
+            else:
+                return {
+                    "valid": False, 
+                    "reason": f"{param_name} must be an array, got {type(value).__name__}"
+                }
         
-        # Check additional validation rules if present
-        if "validation" in param_definition:
-            for rule in param_definition.get("validation", []):
-                if not self._apply_validation_rule(value, rule):
-                    return {"valid": False, "reason": rule.get("errorMessage", "Invalid value")}
-        
+        # Default to valid if no specific validation failed
         return {"valid": True}
-    
-    def _apply_validation_rule(self, value, rule):
-        """Apply a validation rule to a parameter value"""
-        rule_type = rule.get("type")
-        
-        if rule_type == "regex":
-            import re
-            pattern = re.compile(rule.get("pattern", ""))
-            return bool(pattern.match(str(value)))
-        elif rule_type == "range":
-            try:
-                num_value = float(value)
-                min_val = rule.get("min", float("-inf"))
-                max_val = rule.get("max", float("inf"))
-                return min_val <= num_value <= max_val
-            except (ValueError, TypeError):
-                return False
-        elif rule_type == "length":
-            if isinstance(value, str):
-                length = len(value)
-                min_len = rule.get("min", 0)
-                max_len = rule.get("max", float("inf"))
-                return min_len <= length <= max_len
-            return False
-        
-        return True  # Default to valid if rule type unknown

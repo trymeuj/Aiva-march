@@ -1,6 +1,7 @@
 # ai_agent.py
 import json
 import random
+import traceback
 from typing import Dict, List, Optional, Any
 import asyncio
 
@@ -49,21 +50,31 @@ class AIAgent:
         """
         self.conversation_manager.add_message('user', user_input)
         
+        print(f"=== Processing user input in state: {self.current_state} ===")
+        
         # State machine for conversation flow
-        if self.current_state == 'idle':
-            return await self._handle_initial_input(user_input)
-        elif self.current_state == 'gathering_parameters':
-            return await self._handle_parameter_input(user_input)
-        elif self.current_state == 'confirming_execution':
-            return await self._handle_execution_confirmation(user_input)
-        else:
-            # Reset state and start over
+        try:
+            if self.current_state == 'idle':
+                return await self._handle_initial_input(user_input)
+            elif self.current_state == 'gathering_parameters':
+                return await self._handle_parameter_input(user_input)
+            elif self.current_state == 'confirming_execution':
+                return await self._handle_execution_confirmation(user_input)
+            else:
+                # Reset state and start over
+                self.current_state = 'idle'
+                return await self._handle_initial_input(user_input)
+        except Exception as e:
+            print(f"ERROR in process_user_input: {str(e)}")
+            print(traceback.format_exc())
+            
+            # Reset state on error
             self.current_state = 'idle'
-            return await self._handle_initial_input(user_input)
+            return f"Sorry, I encountered an error while processing your request: {str(e)}"
      
     async def _handle_initial_input(self, user_input: str) -> str:
         """
-        Modified to first identify intent, then API, then determine required parameters.
+        Handle initial user input to identify intent, match APIs, and extract parameters.
         
         Args:
             user_input: The user's input text
@@ -71,27 +82,21 @@ class AIAgent:
         Returns:
             Response text to send back to the user
         """
+        print("Starting _handle_initial_input")
         # First: Analyze user intent
         intent_analysis = await self.intent_analyzer.analyze_intent(
             user_input, 
             self.conversation_manager.conversation_history
         )
         
-        self.current_intent = intent_analysis["intent"]
+        print(f"Intent analysis: {json.dumps(intent_analysis, default=str)}")
         
-        # MODIFY THIS SECTION:
-        # Instead of using intent_analysis["matched_apis"], use the LLM-based matching
-        # self.matched_apis = intent_analysis["matched_apis"]
+        self.current_intent = intent_analysis.get("intent", "")
+        self.matched_apis = intent_analysis.get("matched_apis", [])
         
-        # Use LLM to match intent to APIs
-        self.matched_apis = await self.api_knowledge_base.find_apis_by_intent_llm(
-            self.current_intent,
-            self.model
-        )
-        
-        # The rest of the method remains unchanged
         # No matching APIs found
         if not self.matched_apis:
+            print("No matching APIs found")
             self.current_state = 'idle'
             response = (
                 f"I'm not sure how to help with: \"{user_input}\". "
@@ -100,8 +105,38 @@ class AIAgent:
             self.conversation_manager.add_message('assistant', response)
             return response
         
-        # ...rest of the method...
-
+        print(f"Matched APIs: {json.dumps([api.get('id') for api in self.matched_apis], default=str)}")
+        
+        # Extract parameters from the user input
+        param_extraction = await self.parameter_manager.extract_parameters(
+            user_input,
+            self.matched_apis,
+            self.conversation_manager.conversation_history
+        )
+        
+        print(f"Parameter extraction: {json.dumps(param_extraction, default=str)}")
+        
+        # Store valid parameters
+        self.collected_parameters = param_extraction.get("valid_params", {})
+        
+        # Check if we need more parameters
+        self.missing_parameters = param_extraction.get("missing_params", [])
+        
+        if self.missing_parameters:
+            print(f"Missing parameters: {json.dumps([p.get('name') for p in self.missing_parameters], default=str)}")
+            # Update state to gathering parameters
+            self.current_state = 'gathering_parameters'
+            
+            # Generate questions to collect missing parameters
+            question = await self.conversation_manager.generate_clarification_questions(
+                self.missing_parameters
+            )
+            
+            return question
+        else:
+            print("No missing parameters, proceeding to execution")
+            # All needed parameters are already provided
+            return await self._prepare_execution()
 
     async def _handle_parameter_input(self, user_input: str) -> str:
         """
@@ -113,11 +148,14 @@ class AIAgent:
         Returns:
             Response text to send back to the user
         """
+        print("Starting _handle_parameter_input")
         # Extract parameter values from user response
         extracted_values = await self.conversation_manager.process_user_response(
             user_input,
             self.missing_parameters
         )
+        
+        print(f"Extracted values: {json.dumps(extracted_values, default=str)}")
         
         # Update our collected parameters
         self.collected_parameters.update(extracted_values)
@@ -125,19 +163,21 @@ class AIAgent:
         # Recalculate missing parameters
         updated_missing_params = []
         for param in self.missing_parameters:
-            param_name = param["name"]
-            if param_name not in extracted_values:
+            param_name = param.get("name", "")
+            if param_name and param_name not in extracted_values:
                 updated_missing_params.append(param)
         
         self.missing_parameters = updated_missing_params
         
         # Check if we still need more parameters
         if self.missing_parameters:
+            print(f"Still missing parameters: {json.dumps([p.get('name') for p in self.missing_parameters], default=str)}")
             question = await self.conversation_manager.generate_clarification_questions(
                 self.missing_parameters
             )
             return question
         else:
+            print("All parameters collected, proceeding to execution")
             # All parameters collected, ready to execute
             return await self._prepare_execution()
             
@@ -148,19 +188,31 @@ class AIAgent:
         Returns:
             Response text asking the user to confirm execution
         """
+        print("Starting _prepare_execution")
+        print(f"Matched APIs: {json.dumps([api.get('id') for api in self.matched_apis], default=str)}")
+        print(f"Collected parameters: {json.dumps(self.collected_parameters, default=str)}")
+        
         # Create execution plan
         self.execution_plan = await self.execution_planner.create_execution_plan(
             self.matched_apis,
             self.collected_parameters
         )
         
+        if not self.execution_plan:
+            print("ERROR: execution_plan is None")
+            return "I'm having trouble planning how to handle your request. Could you try rephrasing it?"
+            
+        print(f"Execution plan created: {json.dumps(self.execution_plan, default=str)}")
+        
         # In development phase, we don't actually execute but show the plan
         self.current_state = 'confirming_execution'
+        
+        description = self.execution_plan.get("description", "No plan description available")
         
         response = f"""
 Based on your request, here's what I'll do:
 
-{self.execution_plan['description']}
+{description}
 
 Would you like me to proceed with this plan?"""
         
@@ -177,6 +229,7 @@ Would you like me to proceed with this plan?"""
         Returns:
             Response text with execution results or cancellation message
         """
+        print("Starting _handle_execution_confirmation")
         # Analyze if user confirmed or denied the execution
         confirmation_prompt = f"""
 Determine if this response is a confirmation to proceed or not:
@@ -194,24 +247,39 @@ Return ONLY "yes" if the user wants to proceed, or "no" if they don't.
         )
         
         confirmation = confirmation_response.text.strip().lower()
+        print(f"Confirmation response: {confirmation}")
         
         if "yes" in confirmation:
-            # In development phase, simulate execution
-            simulated_results = await self._simulate_api_execution()
-            
-            # Format results for user
-            formatted_results = await self.result_formatter.format_results(
-                simulated_results,
-                self.execution_plan,
-                self.current_intent
-            )
-            
-            # Reset state
-            self.current_state = 'idle'
-            self.conversation_manager.add_message('assistant', formatted_results)
-            
-            return formatted_results
+            print("User confirmed execution")
+            try:
+                # In development phase, simulate execution
+                if not self.execution_plan:
+                    print("ERROR: execution_plan is None before simulation")
+                    return "I'm having trouble with your request. Let's start over. How can I help you?"
+                    
+                simulated_results = await self._simulate_api_execution()
+                print(f"Simulated results: {json.dumps(simulated_results, default=str)}")
+                
+                # Format results for user
+                formatted_results = await self.result_formatter.format_results(
+                    simulated_results,
+                    self.execution_plan,
+                    self.current_intent
+                )
+                
+                # Reset state
+                self.current_state = 'idle'
+                self.conversation_manager.add_message('assistant', formatted_results)
+                
+                return formatted_results
+            except Exception as e:
+                print(f"ERROR in execution simulation: {str(e)}")
+                print(traceback.format_exc())
+                
+                self.current_state = 'idle'
+                return f"Sorry, I encountered an error while processing your request: {str(e)}"
         else:
+            print("User did not confirm execution")
             # User didn't confirm, reset state
             self.current_state = 'idle'
             response = "I've cancelled the operation. Is there something else you'd like to do instead?"
@@ -226,49 +294,98 @@ Return ONLY "yes" if the user wants to proceed, or "no" if they don't.
         Returns:
             List of simulated API execution results
         """
+        print("Starting _simulate_api_execution")
         # In development phase, we simulate API execution
         simulated_results = []
         
-        for step in self.execution_plan["steps"]:
-            # Get API information
-            api_path = step["api"]
-            api_info = self.api_knowledge_base.get_api_by_path(api_path)
-            
-            if not api_info:
-                # API not found
-                simulated_results.append({
-                    "api": api_path,
-                    "success": False,
-                    "error": "API not found"
-                })
-                continue
-            
-            # Check for missing required parameters
-            missing_required = False
-            for param in api_info.get("parameters", []):
-                if param.get("required", False) and param["name"] not in step["parameters"]:
-                    missing_required = True
-                    simulated_results.append({
-                        "api": api_path,
-                        "success": False,
-                        "error": f"Missing required parameter: {param['name']}"
-                    })
-                    break
-            
-            if missing_required:
-                continue
-            
-            # Generate a simulated response based on API return structure
-            simulated_results.append({
-                "api": api_path,
-                "success": True,
-                "result": self._generate_simulated_result(
-                    api_info.get("returns", {}), 
-                    step["parameters"]
-                )
-            })
+        if not self.execution_plan:
+            print("ERROR: execution_plan is None during simulation")
+            return [{
+                "api": "unknown",
+                "success": False,
+                "error": "No execution plan found"
+            }]
         
-        return simulated_results
+        # The execution_plan["details"] is a dictionary, not a list
+        details = self.execution_plan.get("details")
+        print(f"Execution details: {json.dumps(details, default=str)}")
+        
+        if not details:
+            print("ERROR: No execution details found")
+            return [{
+                "api": "unknown",
+                "success": False,
+                "error": "No execution details found"
+            }]
+        
+        # Get API information
+        api_path = details.get("api", "")
+        print(f"API path: {api_path}")
+        
+        if not api_path:
+            print("ERROR: No API path in execution details")
+            return [{
+                "api": "unknown",
+                "success": False,
+                "error": "No API path specified"
+            }]
+        
+        api_info = self.api_knowledge_base.get_api_by_path(api_path)
+        print(f"API info: {json.dumps(api_info, default=str) if api_info else 'None'}")
+        
+        if not api_info:
+            # API not found
+            print(f"ERROR: API not found for path {api_path}")
+            return [{
+                "api": api_path,
+                "success": False,
+                "error": f"API not found for path {api_path}"
+            }]
+        
+        # Extract parameters values from the nested structure
+        parameters = details.get("parameters", {})
+        print(f"Parameters from details: {json.dumps(parameters, default=str)}")
+        
+        extracted_params = {}
+        for param_name, param_info in parameters.items():
+            # Extract the value from the parameter info structure
+            if isinstance(param_info, dict) and "value" in param_info:
+                extracted_params[param_name] = param_info["value"]
+            else:
+                # If structure is different than expected, use the whole param_info
+                extracted_params[param_name] = param_info
+        
+        print(f"Extracted parameters: {json.dumps(extracted_params, default=str)}")
+        
+        # Check for missing required parameters
+        required_params = [p.get("name") for p in api_info.get("parameters", []) if p.get("required", False)]
+        print(f"Required parameters: {json.dumps(required_params, default=str)}")
+        
+        missing_required = []
+        for param_name in required_params:
+            if param_name not in extracted_params:
+                missing_required.append(param_name)
+        
+        if missing_required:
+            print(f"ERROR: Missing required parameters: {json.dumps(missing_required, default=str)}")
+            return [{
+                "api": api_path,
+                "success": False,
+                "error": f"Missing required parameters: {', '.join(missing_required)}"
+            }]
+        
+        # Generate a simulated response based on API return structure
+        return_structure = api_info.get("returns", {})
+        print(f"Return structure: {json.dumps(return_structure, default=str)}")
+        
+        result = self._generate_simulated_result(return_structure, extracted_params)
+        print(f"Generated result: {json.dumps(result, default=str)}")
+        
+        return [{
+            "api": api_path,
+            "success": True,
+            "result": result
+        }]
         
     def _generate_simulated_result(self, return_structure: Dict, input_params: Dict) -> Dict:
         """
@@ -284,33 +401,40 @@ Return ONLY "yes" if the user wants to proceed, or "no" if they don't.
         # Create a mock result based on return structure
         result = {}
         
-        if "structure" in return_structure:
-            for key, type_info in return_structure["structure"].items():
-                if type_info == "string":
-                    # Use input parameter if it matches, otherwise generate placeholder
-                    if key in input_params:
-                        result[key] = input_params[key]
-                    else:
-                        result[key] = f"sample_{key}_{self._generate_random_id()}"
-                elif type_info == "number":
-                    result[key] = round(random.uniform(1, 1000), 2)
-                elif type_info == "boolean":
-                    result[key] = random.choice([True, False])
-                elif type_info == "date":
-                    from datetime import datetime, timedelta
-                    days_offset = random.randint(0, 30)
-                    future_date = datetime.now() + timedelta(days=days_offset)
-                    result[key] = future_date.strftime("%Y-%m-%d %H:%M:%S")
-                elif type_info == "object":
-                    result[key] = {"id": f"obj_{self._generate_random_id()}"}
-                elif type_info == "array":
-                    # Generate a small array of items
-                    result[key] = [
-                        {"id": f"item_{self._generate_random_id()}", "value": f"value_{i}"}
-                        for i in range(1, random.randint(2, 5))
-                    ]
+        # Handle None cases
+        if not return_structure:
+            return {"message": "Operation completed successfully"}
+        
+        structure = return_structure.get("structure", {})
+        if not structure:
+            return {"message": "Operation completed successfully"}
+        
+        for key, type_info in structure.items():
+            if type_info == "string":
+                # Use input parameter if it matches, otherwise generate placeholder
+                if key in input_params:
+                    result[key] = input_params[key]
                 else:
-                    result[key] = None
+                    result[key] = f"sample_{key}_{self._generate_random_id()}"
+            elif type_info == "number":
+                result[key] = round(random.uniform(1, 1000), 2)
+            elif type_info == "boolean":
+                result[key] = random.choice([True, False])
+            elif type_info == "date":
+                from datetime import datetime, timedelta
+                days_offset = random.randint(0, 30)
+                future_date = datetime.now() + timedelta(days=days_offset)
+                result[key] = future_date.strftime("%Y-%m-%d %H:%M:%S")
+            elif type_info == "object":
+                result[key] = {"id": f"obj_{self._generate_random_id()}"}
+            elif type_info == "array":
+                # Generate a small array of items
+                result[key] = [
+                    {"id": f"item_{self._generate_random_id()}", "value": f"value_{i}"}
+                    for i in range(1, random.randint(2, 5))
+                ]
+            else:
+                result[key] = None
         
         return result
         

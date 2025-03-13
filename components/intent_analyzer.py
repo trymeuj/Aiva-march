@@ -2,7 +2,6 @@
 import json
 import re
 from typing import Dict, List, Optional, Any
-import google.generativeai as genai
 
 class IntentAnalyzer:
     def __init__(self, api_knowledge_base, model):
@@ -86,8 +85,11 @@ Respond with a JSON object containing:
                 "entities": self._extract_entities(response.text)
             }
         
-        # Match intent to available APIs
-        matched_apis = self.api_knowledge_base.find_apis_by_intent(analysis_result.get("intent", ""))
+        # Use LLM to match intent to APIs
+        matched_apis = await self.api_knowledge_base.find_apis_by_intent(
+            analysis_result.get("intent", ""),
+            self.model
+        )
         
         return {
             "intent": analysis_result.get("intent", ""),
