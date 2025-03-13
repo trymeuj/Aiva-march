@@ -218,7 +218,7 @@ Would you like me to proceed with this plan?"""
         
         self.conversation_manager.add_message('assistant', response)
         return response.strip()
-        
+    
     async def _handle_execution_confirmation(self, user_input: str) -> str:
         """
         Handle user confirmation for executing the plan.
@@ -232,11 +232,11 @@ Would you like me to proceed with this plan?"""
         print("Starting _handle_execution_confirmation")
         # Analyze if user confirmed or denied the execution
         confirmation_prompt = f"""
-Determine if this response is a confirmation to proceed or not:
-"{user_input}"
+    Determine if this response is a confirmation to proceed or not:
+    "{user_input}"
 
-Return ONLY "yes" if the user wants to proceed, or "no" if they don't.
-"""
+    Return ONLY "yes" if the user wants to proceed, or "no" if they don't.
+    """
         
         confirmation_response = await self.model.generate_content_async(
             confirmation_prompt,
@@ -252,17 +252,18 @@ Return ONLY "yes" if the user wants to proceed, or "no" if they don't.
         if "yes" in confirmation:
             print("User confirmed execution")
             try:
-                # In development phase, simulate execution
+                # Execute real API calls instead of simulation
                 if not self.execution_plan:
-                    print("ERROR: execution_plan is None before simulation")
+                    print("ERROR: execution_plan is None before execution")
                     return "I'm having trouble with your request. Let's start over. How can I help you?"
                     
-                simulated_results = await self._simulate_api_execution()
-                print(f"Simulated results: {json.dumps(simulated_results, default=str)}")
+                # Use execute_api_calls instead of _simulate_api_execution
+                api_results = await self.execute_api_calls()
+                print(f"API execution results: {json.dumps(api_results, default=str)}")
                 
                 # Format results for user
                 formatted_results = await self.result_formatter.format_results(
-                    simulated_results,
+                    api_results,
                     self.execution_plan,
                     self.current_intent
                 )
@@ -273,7 +274,7 @@ Return ONLY "yes" if the user wants to proceed, or "no" if they don't.
                 
                 return formatted_results
             except Exception as e:
-                print(f"ERROR in execution simulation: {str(e)}")
+                print(f"ERROR in API execution: {str(e)}")
                 print(traceback.format_exc())
                 
                 self.current_state = 'idle'
@@ -286,20 +287,19 @@ Return ONLY "yes" if the user wants to proceed, or "no" if they don't.
             self.conversation_manager.add_message('assistant', response)
             
             return response
-            
-    async def _simulate_api_execution(self) -> List[Dict]:
+
+    async def execute_api_calls(self) -> List[Dict]:
         """
-        Simulate API execution (for development phase).
+        Execute API calls according to the execution plan.
         
         Returns:
-            List of simulated API execution results
+            List of API execution results
         """
-        print("Starting _simulate_api_execution")
-        # In development phase, we simulate API execution
-        simulated_results = []
+        print("Starting execute_api_calls")
+        results = []
         
         if not self.execution_plan:
-            print("ERROR: execution_plan is None during simulation")
+            print("ERROR: execution_plan is None during execution")
             return [{
                 "api": "unknown",
                 "success": False,
@@ -320,27 +320,8 @@ Return ONLY "yes" if the user wants to proceed, or "no" if they don't.
         
         # Get API information
         api_path = details.get("api", "")
-        print(f"API path: {api_path}")
-        
-        if not api_path:
-            print("ERROR: No API path in execution details")
-            return [{
-                "api": "unknown",
-                "success": False,
-                "error": "No API path specified"
-            }]
-        
-        api_info = self.api_knowledge_base.get_api_by_path(api_path)
-        print(f"API info: {json.dumps(api_info, default=str) if api_info else 'None'}")
-        
-        if not api_info:
-            # API not found
-            print(f"ERROR: API not found for path {api_path}")
-            return [{
-                "api": api_path,
-                "success": False,
-                "error": f"API not found for path {api_path}"
-            }]
+        method = details.get("method", "GET")
+        print(f"API path: {api_path}, Method: {method}")
         
         # Extract parameters values from the nested structure
         parameters = details.get("parameters", {})
@@ -357,36 +338,36 @@ Return ONLY "yes" if the user wants to proceed, or "no" if they don't.
         
         print(f"Extracted parameters: {json.dumps(extracted_params, default=str)}")
         
-        # Check for missing required parameters
-        required_params = [p.get("name") for p in api_info.get("parameters", []) if p.get("required", False)]
-        print(f"Required parameters: {json.dumps(required_params, default=str)}")
+        # Initialize API client if not done yet
+        if not hasattr(self, 'api_client'):
+            from api_call import APIClient
+            self.api_client = APIClient()
+            await self.api_client.initialize()
         
-        missing_required = []
-        for param_name in required_params:
-            if param_name not in extracted_params:
-                missing_required.append(param_name)
+        # Execute the API call
+        response = await self.api_client.execute_api_call(
+            api_path=api_path,
+            method=method,
+            data=extracted_params if method != "GET" else None,
+            params=extracted_params if method == "GET" else None
+        )
         
-        if missing_required:
-            print(f"ERROR: Missing required parameters: {json.dumps(missing_required, default=str)}")
-            return [{
-                "api": api_path,
-                "success": False,
-                "error": f"Missing required parameters: {', '.join(missing_required)}"
-            }]
-        
-        # Generate a simulated response based on API return structure
-        return_structure = api_info.get("returns", {})
-        print(f"Return structure: {json.dumps(return_structure, default=str)}")
-        
-        result = self._generate_simulated_result(return_structure, extracted_params)
-        print(f"Generated result: {json.dumps(result, default=str)}")
-        
-        return [{
+        # Format the result
+        api_result = {
             "api": api_path,
-            "success": True,
-            "result": result
-        }]
+            "success": response.get("success", False),
+            "result": response.get("result", {})
+        }
         
+        # Add error information if unsuccessful
+        if not response.get("success", False):
+            api_result["error"] = response.get("error", "Unknown error")
+            if "result" in response and isinstance(response["result"], dict) and "message" in response["result"]:
+                api_result["error"] = response["result"]["message"]
+        
+        results.append(api_result)
+        return results
+
     def _generate_simulated_result(self, return_structure: Dict, input_params: Dict) -> Dict:
         """
         Generate simulated API response data.

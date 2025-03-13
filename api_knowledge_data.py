@@ -153,7 +153,7 @@ API_KNOWLEDGE = {
         "get_all_posts": {
             "path": "/api/allposts",
             "method": "GET",
-            "description": "Retrieves all posts from the database.",
+            "description": "Retrieves all posts about courses from the database.",
             "parameters": [],
             "returns": {
                 "type": "array",
@@ -174,7 +174,7 @@ API_KNOWLEDGE = {
         "create_post": {
             "path": "/api/allposts",
             "method": "POST",
-            "description": "Creates a new post.",
+            "description": "Creates a new post about a course.",
             "parameters": [
                 {
                     "name": "courseCategory",
@@ -469,7 +469,7 @@ API_KNOWLEDGE = {
         "search_courses": {
             "path": "/api/search",
             "method": "POST",
-            "description": "Handles search queries for course information. Processes the search query and retrieves relevant data based on the course category and course code provided.",
+            "description": "Handles search queries for course information. Processes the search query and retrieves relevant data including rate cards based on the course category and course code provided.",
             "parameters": [
                 {
                     "name": "searchQuery",
