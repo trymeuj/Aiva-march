@@ -60,7 +60,7 @@ class AIAgent:
             # Reset state and start over
             self.current_state = 'idle'
             return await self._handle_initial_input(user_input)
-            
+     
     async def _handle_initial_input(self, user_input: str) -> str:
         """
         Modified to first identify intent, then API, then determine required parameters.
@@ -79,9 +79,17 @@ class AIAgent:
         
         self.current_intent = intent_analysis["intent"]
         
-        # Second: Match intent to API(s)
-        self.matched_apis = intent_analysis["matched_apis"]
+        # MODIFY THIS SECTION:
+        # Instead of using intent_analysis["matched_apis"], use the LLM-based matching
+        # self.matched_apis = intent_analysis["matched_apis"]
         
+        # Use LLM to match intent to APIs
+        self.matched_apis = await self.api_knowledge_base.find_apis_by_intent_llm(
+            self.current_intent,
+            self.model
+        )
+        
+        # The rest of the method remains unchanged
         # No matching APIs found
         if not self.matched_apis:
             self.current_state = 'idle'
@@ -92,39 +100,8 @@ class AIAgent:
             self.conversation_manager.add_message('assistant', response)
             return response
         
-        # If multiple APIs matched, we might want to disambiguate
-        if len(self.matched_apis) > 1:
-            # Optionally: Add disambiguation step here if needed
-            # For now, just use the first matched API (highest confidence)
-            pass
-        
-        # Third: Extract parameters from initial input
-        parameter_result = await self.parameter_manager.extract_parameters(
-            user_input,
-            self.matched_apis,
-            self.conversation_manager.conversation_history
-        )
-        
-        self.collected_parameters = parameter_result["valid_params"]
-        self.missing_parameters = parameter_result["missing_params"]
-        
-        # Fourth: Check if we need more parameters
-        if self.missing_parameters:
-            self.current_state = 'gathering_parameters'
-            
-            # Generate a message about what we're doing, including which API we're using
-            api_info = self.matched_apis[0].get("description", "this action")
-            question_preface = f"I'll help you with {api_info}. "
-            
-            # Generate questions for missing parameters
-            question = await self.conversation_manager.generate_clarification_questions(
-                self.missing_parameters
-            )
-            
-            return question_preface + question
-        else:
-            # All parameters collected, ready to execute
-            return await self._prepare_execution()
+        # ...rest of the method...
+
 
     async def _handle_parameter_input(self, user_input: str) -> str:
         """
